@@ -31,7 +31,7 @@ PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "adzradevany-aqiila41/FemininomenonSports"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "adzradevany-aqiila41/femininomenonsports"]
 
 
 # Application definition
