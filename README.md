@@ -5,6 +5,7 @@ Untuk template, saya membuat direktori templates dalam aplikasi main lalu membua
 
 Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
 urls.py meneruskan request client ke views.py yang sesuai. views.py menggabungkan template dari berkas html dengan data di models.py dan menampilkannya di laman web html.
+![bagandjango](https://github.com/laladvny/femininomenon/blob/master/bagan%20django.jpg?raw=true)
 
 
 Jelaskan peran settings.py dalam proyek Django!
