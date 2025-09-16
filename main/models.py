@@ -1,8 +1,8 @@
 from django.db import models
 
 # Create your models here.
-# name, price, desc, thumbnail, cat, is_featured
-class News(models.Model):
+
+class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     description = models.TextField()
@@ -12,3 +12,9 @@ class News(models.Model):
 
     def __str__(self):
         return self.name
+
+    
+class Employee(models.Model):
+    name = models.CharField(max_length=255)
+    age = models.IntegerField()
+    persona = models.TextField()
