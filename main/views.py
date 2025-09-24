@@ -12,7 +12,12 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/login')
 def show_main(request):
-    product_list = Product.objects.all()
+    filter_type = request.GET.get("filter", "all")
+
+    if filter_type == "all":
+        product_list = Product.objects.all()
+    else:
+        product_list = Product.objects.filter(user=request.user)
 
     context = {
         'name': 'Adzradevany Aqiila',
