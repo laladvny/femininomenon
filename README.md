@@ -24,7 +24,6 @@ Migrasi database di Django dilakukan dalam dua tahap, yaitu makemigrations untuk
 
 Menurut Anda, dari semua framework yang ada, mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?
 Menurut saya, Django cukup mudah untuk dipelajari dan digunakan, salah satunya karena menggunakan Python yang syntax-nya beginner friendly.
-<<<<<<< HEAD
 
 
 
@@ -50,8 +49,6 @@ Postman
 ![](json.png)
 ![](xmlid.png)
 ![](jsonid.png)
-=======
->>>>>>> b8580014b85fa9cb9a7e12b602df9f90f6e3f8ec
 
 
 
@@ -71,3 +68,20 @@ Penggunaan cookies tidak aman secara default, ada risiko cross site scripting (X
 
 Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
 Membuat fungsi registrasi, login, dan logout di views lalu menyambungkan mereka dengan import di urls dan menambahkan path. Membuat file html register dan login di templates untuk menampilkan halaman register dan login di web. Menambahkan button logout di main.html yang tampil setelah user login. Mengimpor login_required di views dan mengaplikasikannya untuk fungsi show_main, add_product, dan show_product. Menggunakan cookies untuk mengambil data waktu login terakhir dengan method get di context fungsi show_main di views. Mengimpor kelas User dan menambahkan variabel user di models lalu melakukan migrasi. Mengubah fungsi add_product agar save terhubung dengan user yang sedang login. Aktivasi virtual environment, runserver, buka localhost. Membuat dua akun di halaman register dengan username dan password berbeda. Membuat 3 produk baru dengan mengisi semua variabel, logout, login akun kedua, membuat 3 produk lain.
+
+
+
+TUGAS 5
+
+Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Jika terdapat lebih dari satu CSS selector yang berlaku pada elemen yang sama, browser menentukan prioritasnya berdasarkan tingkat spesifisitas. Urutannya, inline style memiliki prioritas tertinggi, kemudian ID selector, lalu class/pseudo-class/attribute selector, dan terakhir element/tag selector. Jika tingkat spesifisitas sama, aturan yang ditulis paling akhir akan digunakan.
+
+Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!
+Responsive design sangat penting karena aplikasi web diakses melalui berbagai device dengan ukuran layar berbeda. Dengan desain yang responsif, tampilan dan navigasi akan tetap nyaman digunakan, baik di desktop maupun perangkat mobile. Contoh aplikasi yang telah menerapkan responsive design adalah Twitter, ukuran tampilan sidebar, timeline, dan list tren, serta DM selalu menyesuaikan ukuran layar baik di desktop maupun mobile.
+
+Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Margin adalah jarak luar antara elemen dengan elemen lainnya, border adalah garis tepi yang mengelilingi elemen, padding adalah space antara konten dengan garis tepi elemen. Implementasinya dapat dilakukan melalui CSS, misalnya: margin: 20px; border: 2px solid black; padding: 10px;, yang berarti elemen memiliki jarak luar 20 pixel, garis tepi hitam dengan ketebalan 2 pixel, serta ruang dalam sebesar 10 pixel.
+
+Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Flexbox adalah teknik layout CSS yang memudahkan pengaturan elemen secara satu dimensi, baik horizontal maupun vertikal, sehingga cocok digunakan untuk komponen seperti navigasi atau deretan card. Grid layout dirancang untuk tata letak dua dimensi yang lebih kompleks, misalnya membagi halaman menjadi header, sidebar, dan konten utama, sehingga lebih terstruktur dan fleksibel untuk desain halaman penuh.
+

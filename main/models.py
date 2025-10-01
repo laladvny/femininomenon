@@ -20,3 +20,9 @@ class Employee(models.Model):
     name = models.CharField(max_length=255)
     age = models.IntegerField()
     persona = models.TextField()
+
+
+class Car(models.Model):
+    name = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255)
+    stock = models.IntegerField()

@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from main.models import Employee, Product
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
-from main.forms import ProductForm
+from main.forms import CarForm, ProductForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -16,12 +16,19 @@ def show_main(request):
 
     if filter_type == "all":
         product_list = Product.objects.all()
-    else:
+    elif filter_type == "my":
         product_list = Product.objects.filter(user=request.user)
+    else:
+        category = request.GET.get("category")
+        if category:
+            product_list = Product.objects.filter(category=category)
+        else:
+            product_list = Product.objects.all()
 
     context = {
         'name': 'Adzradevany Aqiila',
         'class': 'PBP A',
+        'npm': '2406410121',
         'product_list': product_list,
         'last_login': request.COOKIES.get('last_login', 'Never')
     }
@@ -125,3 +132,42 @@ def logout_user(request):
     response = HttpResponseRedirect(reverse('main:login'))
     response.delete_cookie('last_login')
     return response
+
+def add_car(request):
+    form = CarForm(request.POST or None)
+
+    new_car = CarForm.objects.create(
+        name = 'avanza',
+        brand = 'toyota',
+        stock = 300
+    )
+
+    if form.is_valid() and request.method == "POST":
+        name = form.cleaned_data['name']
+        brand = form.cleaned_data['brand']
+        stock = form.cleaned_data['stock']
+        return redirect('main:show_main')
+    
+    context = {
+        name:new_car.name,
+        brand:new_car.brand,
+        stock:new_car.stock
+    }
+
+    return render(request, "add_car.html", context)
+
+def edit_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    form = ProductForm(request.POST or None, instance=product)
+
+    if form.is_valid() and request.method == "POST":
+        form.save()
+        return redirect('main:show_main')
+    
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+
+def delete_product(request, id):
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
+    return HttpResponseRedirect(reverse('main:show_main'))
