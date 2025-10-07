@@ -2,13 +2,16 @@ import datetime
 from django.urls import reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from main.models import Employee, Product
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from main.forms import CarForm, ProductForm
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -57,8 +60,19 @@ def show_xml(request):
 
 def show_json(request):
     product_list = Product.objects.all()
-    json_data = serializers.serialize("json", product_list)
-    return HttpResponse(json_data, content_type="application/json")
+    json_data = [
+        {
+            'id': str(product.id),
+            'name': product.name,
+            'price': str(product.price),
+            'description': product.description,
+            'thumbnail': product.thumbnail,
+            'category': product.category,
+            'is_featured': str(product.is_featured)
+        }
+        for product in product_list
+    ]
+    return JsonResponse(json_data, safe=False)
 
 def show_xml_by_id(request, product_id):
     try:
@@ -70,11 +84,21 @@ def show_xml_by_id(request, product_id):
     
 def show_json_by_id(request, product_id):
     try:
-        product_item = Product.objects.get(pk=product_id)
-        json_data = serializers.serialize("json", [product_item])
-        return HttpResponse(json_data, content_type="application/json")
+        product = Product.objects.select_related('user').get(pk=product_id)
+        json_data = {
+            'id': str(product.id),
+            'name': product.name,
+            'price': str(product.price),
+            'description': product.description,
+            'thumbnail': product.thumbnail,
+            'category': product.category,
+            'is_featured': str(product.is_featured),
+            'user_id': product.user.id,
+            'user_username': product.user.username if product.user else None,
+        }
+        return JsonResponse(json_data)
     except Product.DoesNotExist:
-        return HttpResponse(status=404)
+        return JsonResponse({'detail': 'Not found'}, status=404)
     
 @login_required(login_url='/login')
 def add_product(request):
@@ -106,26 +130,76 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            # AJAX response (fetch)
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Your account has been successfully created!',
+                    'redirect_url': reverse('main:login')
+                })
+
+            # Normal non-AJAX form submission
             messages.success(request, 'Your account has been successfully created!')
             return redirect('main:login')
+
+        else:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                errors = form.errors.get_json_data()
+                error_messages = " ".join(
+                    [f"{field}: {', '.join([err['message'] for err in errs])}"
+                     for field, errs in errors.items()]
+                )
+                return JsonResponse({
+                    'success': False,
+                    'message': error_messages
+                })
     context = {'form':form}
     return render(request, 'register.html', context)
 
 def login_user(request):
-   if request.method == 'POST':
-      form = AuthenticationForm(data=request.POST)
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
 
-      if form.is_valid():
+        if form.is_valid():
             user = form.get_user()
             login(request, user)
+
+            # Handle AJAX login (fetch)
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                response = JsonResponse({
+                'success': True,
+                'message': 'Login successful!',
+                'redirect_url': reverse("main:show_main")
+                })
+                response.set_cookie('last_login', str(datetime.datetime.now()))
+                return response
+
+
+            # Normal (non-AJAX) redirect
             response = HttpResponseRedirect(reverse("main:show_main"))
             response.set_cookie('last_login', str(datetime.datetime.now()))
             return response
 
-   else:
-      form = AuthenticationForm(request)
-   context = {'form': form}
-   return render(request, 'login.html', context)
+        else:
+            # If form invalid and it's an AJAX request
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                errors = form.errors.get_json_data()
+                # Convert error dict to readable string
+                error_messages = " ".join(
+                    [f"{field}: {', '.join([err['message'] for err in errs])}"
+                     for field, errs in errors.items()]
+                )
+                return JsonResponse({
+                    'success': False,
+                    'message': error_messages
+                })
+            else:
+                return render(request, 'login.html', {'form': form})
+
+    else:
+        form = AuthenticationForm(request)
+        context = {'form': form}
+        return render(request, 'login.html', context)
 
 def logout_user(request):
     logout(request)
@@ -171,3 +245,48 @@ def delete_product(request, id):
     product = get_object_or_404(Product, pk=id)
     product.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+@csrf_exempt # Menonaktifkan CSRF protection untuk request AJAX ini
+@require_POST # Memastikan hanya HTTP POST yang diterima
+def add_product_ajax(request):
+    name = strip_tags(request.POST.get("name"))
+    price = request.POST.get("price")
+    description = strip_tags(request.POST.get("description"))
+    category = request.POST.get("category")
+    thumbnail = request.POST.get("thumbnail")
+    is_featured = request.POST.get("is_featured") == 'on'  # checkbox handling, mengembalikan 'on' jika dicentang
+    user = request.user
+
+    new_product = Product(
+        name=name, 
+        price=price,
+        description=description,
+        category=category,
+        thumbnail=thumbnail,
+        is_featured=is_featured,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+
+@csrf_exempt
+@require_POST
+def edit_product_ajax(request, id):
+    product = get_object_or_404(Product, pk=id)
+    product.name = strip_tags(request.POST.get("name"))
+    product.price = request.POST.get("price")
+    product.description = strip_tags(request.POST.get("description"))
+    product.category = request.POST.get("category")
+    product.thumbnail = request.POST.get("thumbnail")
+    product.is_featured = request.POST.get("is_featured") == 'true'
+    product.save()
+
+    return JsonResponse({"success": True, "message": "Product updated successfully"})
+    
+@csrf_exempt
+@require_POST
+def delete_product_ajax(request, id):
+    product = get_object_or_404(Product, pk=id)
+    product.delete()
+    return JsonResponse({"success": True, "message": "Product deleted successfully"})
