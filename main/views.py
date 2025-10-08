@@ -249,27 +249,34 @@ def delete_product(request, id):
 @csrf_exempt # Menonaktifkan CSRF protection untuk request AJAX ini
 @require_POST # Memastikan hanya HTTP POST yang diterima
 def add_product_ajax(request):
-    name = strip_tags(request.POST.get("name"))
-    price = request.POST.get("price")
-    description = strip_tags(request.POST.get("description"))
-    category = request.POST.get("category")
-    thumbnail = request.POST.get("thumbnail")
-    is_featured = request.POST.get("is_featured") == 'on'  # checkbox handling, mengembalikan 'on' jika dicentang
-    user = request.user
+    if request.method == "POST":
+        name = request.POST.get("name")
+        price = request.POST.get("price")
+        description = request.POST.get("description")
+        category = request.POST.get("category")
+        thumbnail = request.POST.get("thumbnail")
+        is_featured = request.POST.get("is_featured") == "on"
 
-    new_product = Product(
-        name=name, 
-        price=price,
-        description=description,
-        category=category,
-        thumbnail=thumbnail,
-        is_featured=is_featured,
-        user=user
-    )
-    new_product.user = request.user
-    new_product.save()
+        if not name or not price:
+            return JsonResponse({"success": False, "message": "Name and price are required."}, status=400)
 
-    return HttpResponse(b"CREATED", status=201)
+        product = Product.objects.create(
+            name=name,
+            price=price,
+            description=description or "",
+            category=category or "Uncategorized",
+            thumbnail=thumbnail or "",
+            is_featured=is_featured,
+            user=request.user  # make sure your Product model has a user FK
+        )
+
+        return JsonResponse({
+            "success": True,
+            "message": "Product added successfully",
+            "id": product.id
+        })
+
+    return JsonResponse({"success": False, "message": "Invalid request method"}, status=405)
 
 @csrf_exempt
 @require_POST

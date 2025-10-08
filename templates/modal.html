@@ -233,7 +233,7 @@
     try {
       const res = await fetch("{% url 'main:add_product_ajax' %}", {
         method: "POST",
-        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        headers: { "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value, "X-Requested-With": "XMLHttpRequest" },
         body: formData,
       });
 
