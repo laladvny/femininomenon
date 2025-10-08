@@ -145,6 +145,20 @@ async function loadCategories() {
     });
   }
 
+  // === DYNAMIC CATEGORY HANDLING ===
+// Show input if user selects "Add new category"
+document.getElementById("productCategory").addEventListener("change", (e) => {
+  const newCategoryInput = document.getElementById("newCategoryInput");
+  if (e.target.value === "__new__") {
+    newCategoryInput.classList.remove("hidden");
+    newCategoryInput.required = true;
+  } else {
+    newCategoryInput.classList.add("hidden");
+    newCategoryInput.required = false;
+    input.value = "";
+  }
+});
+
 // === FILTER & SORT ===
 document.getElementById("categoryFilter").addEventListener("change", applyFilters);
 document.getElementById("sortFilter").addEventListener("change", applyFilters);

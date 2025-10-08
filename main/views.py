@@ -291,5 +291,5 @@ def delete_product_ajax(request, id):
     return JsonResponse({"success": False, "error": "Product not found"}, status=404)
 
 def get_categories_ajax(request):
-    categories = Product.objects.values_list("category", flat=True).distinct()
-    return JsonResponse(list(categories), safe=False)
+    categories = list(Product.objects.values_list('category', flat=True).distinct())
+    return JsonResponse(categories, safe=False)

@@ -29,10 +29,12 @@
           <textarea id="description" name="description" rows="3" class="w-full border rounded-md px-3 py-2" required></textarea>
         </div>
         <div class="mb-4">
-          <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
-          <select id="category" name="category" class="w-full border rounded-md px-3 py-2" required>
-            <option value="">Choose a category</option>
+          <label class="block text-gray-700 font-medium mb-1">Category</label>
+          <select id="productCategory" name="category" class="w-full border rounded p-2" required>
+            <option value="" disabled selected>Select a category</option>
+            <option value="__new__">+ Add new category</option>
           </select>
+          <input type="text" id="newCategoryInput" class="w-full border rounded p-2 mt-2 hidden" placeholder="Enter new category">
         </div>
         <div class="mb-4">
           <label for="thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail URL</label>
@@ -128,6 +130,7 @@
 
 
   function showModal() {
+    loadCategoriesForAddProduct();
     animateModal(document.getElementById('crudModal'), document.getElementById('crudModalContent'), true);
   }
   function hideModal() {
@@ -178,21 +181,81 @@
     }
   });
 
+  async function loadCategoriesForAddProduct() {
+    const categorySelect = document.getElementById("productCategory");
+    if (!categorySelect) return;
+
+    try {
+      const res = await fetch("{% url 'main:get_categories_ajax' %}");
+      if (!res.ok) throw new Error("Failed to fetch categories");
+      const categories = await res.json();
+
+      // Clear old options
+      categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
+
+      // Add categories dynamically
+      if (categories.length > 0) {
+        categories.forEach(cat => {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+          categorySelect.appendChild(opt);
+        });
+      }
+
+      // Always append “Add new category”
+      const newOption = document.createElement("option");
+      newOption.value = "__new__";
+      newOption.textContent = "+ Add new category";
+      categorySelect.appendChild(newOption);
+
+    } catch (err) {
+      console.error("Error loading categories:", err);
+      showToast("Failed to load categories", "", "error");
+    }
+  }
 
   async function addProduct() {
-    await fetch("{% url 'main:add_product_ajax' %}", {
-      method: "POST",
-      body: new FormData(document.querySelector('#productForm')),
-    });
-    document.getElementById("productForm").reset();
-    hideModal();
-    showToast('Product added successfully!', '', 'success');
-    document.dispatchEvent(new CustomEvent('productAdded'));
+    const form = document.querySelector('#productForm');
+    const categorySelect = document.getElementById("productCategory");
+    const selectedCategory = categorySelect.value;
+    const newCategoryInput = document.getElementById("newCategoryInput").value.trim();
+
+    // Decide which category to use
+    const finalCategory = selectedCategory === "__new__" && newCategoryInput
+      ? newCategoryInput
+      : selectedCategory;
+
+    // Build FormData manually
+    const formData = new FormData(form);
+    formData.set("category", finalCategory); // override or set the category
+
+    try {
+      const res = await fetch("{% url 'main:add_product_ajax' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": getCookie("csrftoken") },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Failed to add product");
+
+      form.reset();
+      document.getElementById("newCategoryInput").classList.add("hidden"); // hide input after use
+      hideModal();
+      showToast('Product added successfully!', '', 'success');
+      document.dispatchEvent(new CustomEvent('productAdded'));
+    } catch (err) {
+      console.error("Add product failed:", err);
+      showToast('Failed to add product', '', 'error');
+    }
   }
-  document.getElementById("productForm").addEventListener("submit", e => {
+
+  // Handle submit
+  document.getElementById("productForm").addEventListener("submit", (e) => {
     e.preventDefault();
     addProduct();
   });
+
 
 
   async function saveEditProduct() {
