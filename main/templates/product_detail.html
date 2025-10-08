@@ -6,174 +6,149 @@
 {% endblock meta %}
 
 {% block content %}
-<div class="bg-gray-50 w-full min-h-screen">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Back Navigation -->
-        <div class="mb-6">
-            <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-                ← Back to products
-            </a>
-        </div>
-        
-        <!-- Loading State -->
-        <div id="loading-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center">
-            <svg class="animate-spin h-8 w-8 text-pink-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-            </svg>
-            <p class="text-gray-600 mt-3">Loading product detail...</p>
-        </div>
-
-        <!-- Error State -->
-        <div id="error-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
-            <div class="w-16 h-16 mx-auto mb-4">
-                <div class="text-red-500 text-5xl">⚠️</div>
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mb-2">Failed to load product</h3>
-            <p class="text-gray-500">Please try again later.</p>
-        </div>
-
-        <!-- Article Content -->
-        <article id="article-content" class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            
-            <!-- Header -->
-            <div class="p-6 sm:p-8">
-                <div id="badges-container" class="flex flex-wrap items-center gap-2 mb-4"></div>
-                
-                <h1 id="product-name" class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4"></h1>
-                <h3 id="product-price" class="text-xl sm:text-2xl font-semibold text-gray-800 leading-tight mb-4"></h3>
-            </div>
-
-            <!-- Featured Image -->
-            <div id="featured-image-container" class="px-6 sm:px-8">
-                <img id="featured-image"
-                    src="" 
-                    alt="" 
-                    class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg">
-            </div>
-
-            <!-- Content -->
-            <div class="p-6 sm:p-8">
-                <div class="prose prose-lg max-w-none">
-                    <div id="product-description-text" class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg"></div>
-                </div>
-            </div>
-
-            <!-- Author Info -->
-            <div class="border-t border-gray-200 p-6 sm:p-8 bg-gray-50">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="font-medium text-gray-900">
-                                <p id="product-source">Product source: Loading...</p>
-                        </div>
-                        <p class="text-sm text-grgay-500">Product source</p>
-                    </div>
-                </div>
-            </div>
-        </article>
+<div class="bg-red-50 w-full min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Back Navigation -->
+    <div class="mb-6">
+      <a href="{% url 'main:show_main' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+        ← Back to products
+      </a>
     </div>
+
+    <!-- Loading State -->
+    <div id="loading-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+      <svg class="animate-spin h-8 w-8 text-pink-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <p class="text-gray-600 mt-3">Loading product detail...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error-state" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
+      <div class="w-16 h-16 mx-auto mb-4">
+        <div class="text-red-500 text-5xl">⚠️</div>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Failed to load product</h3>
+      <p class="text-gray-500">Please try again later.</p>
+    </div>
+
+    <!-- Product Content -->
+    <article id="article-content" class="bg-white rounded-lg border border-gray-200 overflow-hidden hidden">
+      
+      <!-- Header -->
+      <div class="p-6 sm:p-8">
+        <div id="badges-container" class="flex flex-wrap items-center gap-2 mb-4"></div>
+        <h1 id="product-name" class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4"></h1>
+        <h3 id="product-price" class="text-xl sm:text-2xl font-semibold text-gray-800 leading-tight mb-4"></h3>
+      </div>
+
+      <!-- Featured Image -->
+      <div id="featured-image-container" class="px-6 sm:px-8 hidden">
+        <img id="featured-image"
+          src=""
+          alt=""
+          class="w-64 h-full sm:w-80 lg:w-96 object-cover rounded-lg">
+      </div>
+
+      <!-- Description -->
+      <div class="p-6 sm:p-8">
+        <div class="prose prose-lg max-w-none">
+          <div id="product-description-text" class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg"></div>
+        </div>
+      </div>
+
+      <!-- Category & Added By -->
+      <div class="border-t border-gray-200 p-6 sm:p-8 bg-gray-50">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <p class="text-sm text-gray-600">
+            <span class="font-medium">Category:</span> <span id="product-category">Loading...</span>
+          </p>
+          <p class="text-sm text-gray-600">
+            <span class="font-medium">Added by:</span> <span id="product-user">Loading...</span>
+          </p>
+        </div>
+      </div>
+    </article>
+  </div>
 </div>
+{% endblock content %}
 
-
+{% block script %}
 <script>
-// Configuration
 const PRODUCT_ID = "{{ product.id }}";
-const PRODUCT_DETAIL_ENDPOINT = `{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', PRODUCT_ID);
+const PRODUCT_DETAIL_ENDPOINT = `/json/${PRODUCT_ID}/`;
 
 // DOM Elements
 const loadingState = document.getElementById('loading-state');
 const errorState = document.getElementById('error-state');
 const articleContent = document.getElementById('article-content');
-const badgesContainer = document.getElementById('badges-container');
 const productName = document.getElementById('product-name');
 const productPrice = document.getElementById('product-price');
+const productDescriptionText = document.getElementById('product-description-text');
+const productCategory = document.getElementById('product-category');
+const productFeatured = document.getElementById('product-featured');
+const badgesContainer = document.getElementById('badges-container');
 const featuredImageContainer = document.getElementById('featured-image-container');
 const featuredImage = document.getElementById('featured-image');
-const productDescriptionText = document.getElementById('product-description-text');
-const productSource = document.getElementById('product-source');
+const productUser = document.getElementById('product-user');
 
-// Show/hide page sections
+// Helper to show/hide states
 function showState(state) {
-    loadingState.classList.toggle('hidden', state !== 'loading');
-    errorState.classList.toggle('hidden', state !== 'error');
-    articleContent.classList.toggle('hidden', state !== 'ready');
+  loadingState.classList.toggle('hidden', state !== 'loading');
+  errorState.classList.toggle('hidden', state !== 'error');
+  articleContent.classList.toggle('hidden', state !== 'ready');
 }
 
-// Get readable category name
-function getCategoryLabel(categoryCode) {
-    const categoryMapping = {
-    yoga: 'Yoga',
-    cardio: 'Cardio',
-    basketball: 'Basketball',
-    };
-    return categoryMapping[categoryCode] || categoryCode;
+// Render product data
+function renderProduct(p) {
+  productName.textContent = p.name || "Unnamed Product";
+  productPrice.textContent = p.price ? `Rp ${p.price}` : "No price available";
+  productDescriptionText.textContent = p.description || "No description available.";
+  productCategory.textContent = p.category ? p.category.charAt(0).toUpperCase() + p.category.slice(1) : "Uncategorized";
+  productUser.textContent = p.user_username ? p.user_username : "Unknown user";
+
+  // Badges
+  badgesContainer.innerHTML = "";
+  if (p.category) {
+    const catBadge = document.createElement("span");
+    catBadge.className = "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-pink-600 text-white";
+    catBadge.textContent = p.category.charAt(0).toUpperCase() + p.category.slice(1);
+    badgesContainer.appendChild(catBadge);
+  }
+  if (p.is_featured === "True" || p.is_featured === true) {
+    const featuredBadge = document.createElement("span");
+    featuredBadge.className = "inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800";
+    featuredBadge.textContent = "Featured";
+    badgesContainer.appendChild(featuredBadge);
+  }
+
+  // Image
+  if (p.thumbnail) {
+    featuredImage.src = p.thumbnail;
+    featuredImage.alt = p.name;
+    featuredImageContainer.classList.remove('hidden');
+  } else {
+    featuredImageContainer.classList.add('hidden');
+  }
 }
 
-// Render article content
-function renderArticle(product) {
-    // Set title
-    productName.textContent = product.name;
-    document.title = `${product.name} - Femininomenon Sports`;
-    
-    // Set badges
-    badgesContainer.innerHTML = '';
-    
-    // Category badge
-    const categoryBadge = document.createElement('span');
-    categoryBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-pink-600 text-white';
-    categoryBadge.textContent = getCategoryLabel(product.category);
-    badgesContainer.appendChild(categoryBadge);
-    
-    // Featured badge
-    if (product.is_featured) {
-        const featuredBadge = document.createElement('span');
-        featuredBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800';
-        featuredBadge.textContent = 'Featured';
-        badgesContainer.appendChild(featuredBadge);
-    }
-    
-    // Set featured image
-    if (product.thumbnail) {
-        featuredImage.src = product.thumbnail;
-        featuredImage.alt = product.name;
-        featuredImageContainer.classList.remove('hidden');
-    } else {
-        featuredImageContainer.classList.add('hidden');
-    }
-    
-    // Set content
-    articleContentText.textContent = product.description;
-    
-    // Set author
-    const sourceName = product.user_username || 'Unknown';
-    productSource.textContent = `Product source: ${sourceName}`;
-}
-
-// Fetch product detail
+// Load product detail via AJAX
 async function loadProductDetail() {
-    try {
-        showState('loading');
-        
-        const response = await fetch(PRODUCT_DETAIL_ENDPOINT, {
-            headers: { 'Accept': 'application/json' },
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch product detail');
-        }
-
-        const productData = await response.json();
-        renderArticle(productData);
-        showState('ready');
-    } catch (error) {
-        console.error('Error loading product detail:', error);
-        showState('error');
-    }
+  try {
+    showState('loading');
+    const res = await fetch(PRODUCT_DETAIL_ENDPOINT);
+    if (!res.ok) throw new Error('Failed to load product data');
+    const data = await res.json();
+    renderProduct(data);
+    showState('ready');
+  } catch (err) {
+    console.error("Product detail load error:", err);
+    showState('error');
+  }
 }
 
-// Initialize page
 loadProductDetail();
 </script>
-
-{% endblock content %}
+{% endblock script %}

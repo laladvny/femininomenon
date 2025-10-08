@@ -85,3 +85,17 @@ Margin adalah jarak luar antara elemen dengan elemen lainnya, border adalah gari
 Jelaskan konsep flex box dan grid layout beserta kegunaannya!
 Flexbox adalah teknik layout CSS yang memudahkan pengaturan elemen secara satu dimensi, baik horizontal maupun vertikal, sehingga cocok digunakan untuk komponen seperti navigasi atau deretan card. Grid layout dirancang untuk tata letak dua dimensi yang lebih kompleks, misalnya membagi halaman menjadi header, sidebar, dan konten utama, sehingga lebih terstruktur dan fleksibel untuk desain halaman penuh.
 
+
+
+TUGAS 6
+
+1. Apa perbedaan antara synchronous request dan asynchronous request?
+    Perbedaannya adalah cara browser memproses permintaan dan respon dari server. Pada synchronous request, browser akan menunggu hingga respon dari server diterima sebelum melanjutkan proses lain sehingga halaman bisa tampak “berhenti” sementara. Sedangkan, pada asynchronous request (seperti AJAX), browser dapat mengirim permintaan ke server di latar belakang tanpa perlu me-reload halaman sehingga pengguna tetap dapat berinteraksi dengan halaman sambil data diperbarui secara dinamis.
+2. Bagaimana AJAX bekerja di Django (alur request–response)?
+    AJAX di Django bekerja dengan mengirim permintaan HTTP (biasanya menggunakan fetch() atau XMLHttpRequest) dari JavaScript di sisi klien ke view Django tanpa me-reload halaman. Django kemudian memproses data tersebut di view seperti biasa, lalu mengembalikan respon dalam format JSON. Setelah itu, JavaScript menangkap respon JSON tersebut dan memperbarui elemen HTML di halaman sesuai data yang diterima sehingga tercipta alur interaktif antara klien dan server tanpa perlu render ulang seluruh halaman.
+3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+    Keuntungan menggunakan AJAX dibandingkan render biasa adalah efisiensi dan pengalaman pengguna yang lebih baik. Dengan AJAX, hanya sebagian data atau elemen halaman yang diperbarui, bukan seluruh halaman seperti pada render biasa. Hal ini membuat proses lebih cepat, menghemat bandwidth, dan menghasilkan interaksi yang lebih halus dan responsif, misalnya saat menambah produk, login, atau memuat daftar data tanpa kehilangan posisi halaman yang sedang dilihat pengguna.
+4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+    Keamanan AJAX untuk Login dan Register di Django dapat dijaga dengan memastikan setiap request dilindungi oleh CSRF token yang mencegah pihak ketiga mengirim permintaan palsu ke server. Selain itu, validasi input di sisi server tetap wajib dilakukan meskipun data dikirim lewat AJAX, tidak boleh hanya mengandalkan validasi di sisi klien. Django juga menyediakan middleware bawaan untuk menangani CSRF sehingga setiap permintaan AJAX perlu menyertakan token tersebut di header.
+5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+    AJAX meningkatkan pengalaman pengguna (User Experience) karena memungkinkan interaksi yang cepat dan dinamis tanpa perlu me-reload seluruh halaman yang membuat situs terasa lebih responsif dan modern. Misal, pengguna bisa menambahkan item ke keranjang, memfilter produk, atau mengirim formulir tanpa gangguan tampilan. Dengan cara ini, waktu tunggu terasa lebih singkat, alur penggunaan lebih lancar, dan keseluruhan pengalaman pengguna menjadi lebih nyaman dan efisien.

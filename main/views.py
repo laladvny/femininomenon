@@ -68,23 +68,24 @@ def show_json(request):
             'description': product.description,
             'thumbnail': product.thumbnail,
             'category': product.category,
-            'is_featured': str(product.is_featured)
+            'is_featured': str(product.is_featured),
+            'user_username': product.user.username if product.user else None,
         }
         for product in product_list
     ]
     return JsonResponse(json_data, safe=False)
 
-def show_xml_by_id(request, product_id):
+def show_xml_by_id(request, id):
     try:
-        product_item = Product.objects.filter(pk=product_id)
+        product_item = Product.objects.filter(pk=id)
         xml_data = serializers.serialize("xml", product_item)
         return HttpResponse(xml_data, content_type="application/xml")
     except Product.DoesNotExist:
         return HttpResponse(status=404)
     
-def show_json_by_id(request, product_id):
+def show_json_by_id(request, id):
     try:
-        product = Product.objects.select_related('user').get(pk=product_id)
+        product = Product.objects.get(pk=id)
         json_data = {
             'id': str(product.id),
             'name': product.name,
@@ -93,7 +94,6 @@ def show_json_by_id(request, product_id):
             'thumbnail': product.thumbnail,
             'category': product.category,
             'is_featured': str(product.is_featured),
-            'user_id': product.user.id,
             'user_username': product.user.username if product.user else None,
         }
         return JsonResponse(json_data)
@@ -266,6 +266,7 @@ def add_product_ajax(request):
         is_featured=is_featured,
         user=user
     )
+    new_product.user = request.user
     new_product.save()
 
     return HttpResponse(b"CREATED", status=201)
@@ -284,9 +285,11 @@ def edit_product_ajax(request, id):
 
     return JsonResponse({"success": True, "message": "Product updated successfully"})
     
-@csrf_exempt
-@require_POST
 def delete_product_ajax(request, id):
     product = get_object_or_404(Product, pk=id)
     product.delete()
-    return JsonResponse({"success": True, "message": "Product deleted successfully"})
+    return JsonResponse({"success": False, "error": "Product not found"}, status=404)
+
+def get_categories_ajax(request):
+    categories = Product.objects.values_list("category", flat=True).distinct()
+    return JsonResponse(list(categories), safe=False)
